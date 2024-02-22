@@ -5,20 +5,32 @@ application up and running.
 
 Things you may want to cover:
 
-* Ruby version
+* Ruby version : 3.0.5
 
-* System dependencies
+* Rails version: 7.0.8
 
-* Configuration
+* Database: POSTGRES
 
-* Database creation
+Step for install
 
-* Database initialization
+* For configuration this: 
+1. git clone https://github.com/Pooja-95/course-tutor-api.git
 
-* How to run the test suite
+2. bundle install for installing dependencies
 
-* Services (job queues, cache servers, search engines, etc.)
+3. rails db:create, rails db:migrate, rails db:seed
 
-* Deployment instructions
+4. For create a course & its tutors 
+Using Postman
+Endpoint: post base_url/courses
+Body: 
+course[name]: 
+course[description]:
+course[tutors_attributes][0][name]:
+course[tutors_attributes][0][bio]:
+course[tutors_attributes][1][name]:
+course[tutors_attributes][1][bio]:
 
-* ...
+5. For list all the courses along with their tutors
+
+Endpoint: get base_url/courses
