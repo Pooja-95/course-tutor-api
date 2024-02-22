@@ -16,19 +16,28 @@ Step for install
 * For configuration this: 
 1. git clone https://github.com/Pooja-95/course-tutor-api.git
 
+cd course-tutor-api
+
 2. bundle install for installing dependencies
 
-3. rails db:create, rails db:migrate, rails db:seed
+3. rails db:create rails db:migrate rails db:seed
 
 4. For create a course & its tutors 
 Using Postman
+
 Endpoint: post base_url/courses
+
 Body: 
 course[name]: 
+
 course[description]:
+
 course[tutors_attributes][0][name]:
+
 course[tutors_attributes][0][bio]:
+
 course[tutors_attributes][1][name]:
+
 course[tutors_attributes][1][bio]:
 
 5. For list all the courses along with their tutors
