@@ -3,22 +3,21 @@ require 'spec_helper'
 
 RSpec.describe CoursesController, type: :request do
   before(:all) do
-    course = FactoryBot.create(:course)
-    tutor_1 =  FactoryBot.create(:tutor, course_id: course.id)
-    tutor_2 =  FactoryBot.create(:tutor, course_id: course.id)
+    @course = FactoryBot.create(:course)
+    @tutors = FactoryBot.create(:tutor, course: @course)
   end
 
-  describe 'GET(Fetch courses with tutors)' do
-    it 'get List of  courses with their tutors type' do
+  describe 'GET /courses (Fetch courses with tutors)' do
+    it 'returns a list of courses with their tutors' do
       get '/courses'
-      json_response = JSON.parse(response.body)
       expect(response).to have_http_status(200)
+      json_response = JSON.parse(response.body)
     end
   end
 
-  describe 'Create( course with tutors)' do
-    it 'create course with  tutors' do 
-      post '/courses', params: {
+  describe 'POST /courses (Create course with tutors)' do
+    let(:valid_course_params) do
+      {
         "course": {
           "name": "Mathematics",
           "description": "An introductory course to mathematics",
@@ -34,7 +33,41 @@ RSpec.describe CoursesController, type: :request do
           ]
         }
       }
+    end
+
+    it 'creates a course with tutors with correct params' do 
+      post_invalid_course(valid_course_params)
       expect(response).to have_http_status(201)
     end
+
+    context 'when params are invalid' do
+      it 'does not create a course if course name is not present' do 
+        invalid_params = valid_course_params.deep_merge("course": { "name": "" })
+        post_invalid_course(invalid_params)
+        expect(response).to have_http_status(422)
+        expect(JSON.parse(response.body)['course']['name'][0]).to eq("can't be blank")
+      end
+
+      it 'does not create a course if tutor name is not present' do 
+        invalid_params = valid_course_params.deep_merge("course": { "tutors_attributes": [{ "name": "" }] })
+        post_invalid_course(invalid_params)
+        expect(response).to have_http_status(422)
+        expect(JSON.parse(response.body)['course']['tutors.name'][0]).to eq("can't be blank")
+      end
+
+      it 'does not create a course if tutor bio is not present' do 
+        invalid_params = valid_course_params.deep_merge("course": { "tutors_attributes": [{ "bio": "" }] })
+        post_invalid_course(invalid_params)
+        expect(response).to have_http_status(422)
+        expect(JSON.parse(response.body)['course']['tutors.bio'][0]).to eq("can't be blank")
+      end
+    end
   end
+
+  private
+
+  def post_invalid_course(params)
+    post '/courses', params: params
+  end
+
 end
